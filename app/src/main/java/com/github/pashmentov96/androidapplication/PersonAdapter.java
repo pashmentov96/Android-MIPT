@@ -31,9 +31,10 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PersonViewHolder holder, int position) {
-        holder.personName.setText(personList.get(position).getName());
-        holder.photo.setImageResource(personList.get(position).getImageRes());
-        holder.setId(personList.get(position).getId());
+        Person currentPerson = personList.get(position);
+        holder.personName.setText(currentPerson.getName());
+        holder.photo.setImageResource(currentPerson.getImageRes());
+        holder.setId(currentPerson.getId());
     }
 
     @Override
@@ -49,13 +50,12 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
             super(itemView);
             personName = itemView.findViewById(R.id.personName);
             photo = itemView.findViewById(R.id.miniPhoto);
-            //personItemView == itemView ???
             View personItemView = itemView.findViewById(R.id.personItemView);
             personItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    context.startActivity(profile.getIntent(context, id));
+                    context.startActivity(ProfileActivity.getIntent(context, id));
                 }
             });
         }

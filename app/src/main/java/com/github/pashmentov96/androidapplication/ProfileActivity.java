@@ -8,12 +8,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class profile extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     private static String ID_KEY = "ID_KEY";
 
     public static Intent getIntent(Context context, long id) {
-        Intent intent = new Intent(context, profile.class);
+        Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtra(ID_KEY, id);
         return intent;
     }

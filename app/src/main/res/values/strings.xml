@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Android Application</string>
     <string name="about_you">About you</string>
+    <string name="default_name">Cat -- please</string>
 </resources>
