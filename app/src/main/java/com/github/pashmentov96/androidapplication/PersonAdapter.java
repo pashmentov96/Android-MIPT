@@ -56,7 +56,6 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
                 public void onClick(View v) {
                     Context context = v.getContext();
                     context.startActivity(profile.getIntent(context, id));
-                    //Toast.makeText(context, personName.getText(), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -64,10 +63,5 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
             this.id = id;
         }
     }
-
-    public Person getPersonByIndex(int index) {
-        return personList.get(index);
-    }
-
 
 }
