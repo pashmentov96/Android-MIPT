@@ -21,9 +21,7 @@ public class MainActivity extends AppCompatActivity {
         final PersonAdapter adapter = new PersonAdapter();
         recyclerView.setAdapter(adapter);
 
-        if (savedInstanceState == null) {
-            StorageOfPersons.generate();
-        }
+        StorageOfPersons.generate();
         adapter.setPersonList(StorageOfPersons.getPersonList());
 
     }
