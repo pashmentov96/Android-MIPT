@@ -14,7 +14,7 @@ import android.widget.TextView;
 public class ProfileFragment extends Fragment {
     private static String NAME_KEY = "NAME_KEY";
 
-    public static Fragment newInstance(@NonNull final long id) {
+    public static Fragment newInstance(long id) {
         Fragment fragment = new ProfileFragment();
 
         Bundle arguments = new Bundle();
