@@ -7,13 +7,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements ViewHolderListener {
 
     @Override
     public void onPersonClicked(long id) {
-        showDetailContainer(id);
+        showProfileFragment(id);
     }
 
     private static String PROFILE_ON_DETAIL_CONTAINER = "Profile on detail container";
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements ViewHolderListene
         }
     }
 
-    public void showDetailContainer(long id) {
+    public void showProfileFragment(long id) {
         lastId = id;
         View detailView = findViewById(R.id.detailContainer);
         if (detailView == null) {
