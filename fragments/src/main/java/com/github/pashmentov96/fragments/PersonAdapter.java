@@ -14,8 +14,10 @@ import java.util.List;
 
 class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder> {
     private List<Person> personList = new ArrayList<>();
+    private ViewHolderListener listener;
 
-    public void setPersonList(List<Person> personList) {
+    public void setPersonList(ViewHolderListener listener, List<Person> personList) {
+        this.listener = listener;
         this.personList = personList;
         notifyDataSetChanged();
     }
@@ -25,7 +27,7 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
     public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.person_item_view, parent, false);
-        return new PersonViewHolder(view);
+        return new PersonViewHolder(view, listener);
     }
 
     @Override
@@ -45,17 +47,18 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
         private TextView personName;
         private ImageView photo;
         private long id;
+        private ViewHolderListener listener;
 
-        public PersonViewHolder(View itemView) {
+        public PersonViewHolder(View itemView, ViewHolderListener listener) {
             super(itemView);
+            this.listener = listener;
             personName = itemView.findViewById(R.id.personName);
             photo = itemView.findViewById(R.id.miniPhoto);
             View personItemView = itemView.findViewById(R.id.personItemView);
             personItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
-                    ((MainActivity)context).showDetailContainer(id);
+                    PersonViewHolder.this.listener.onPersonClicked(id);
                 }
             });
         }

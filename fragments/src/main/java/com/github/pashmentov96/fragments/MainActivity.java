@@ -9,7 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ViewHolderListener {
+
+    @Override
+    public void onPersonClicked(long id) {
+        showDetailContainer(id);
+    }
 
     private static String PROFILE_ON_DETAIL_CONTAINER = "Profile on detail container";
     private static String PROFILE_ON_MAIN_CONTAINER = "Profile on main container";

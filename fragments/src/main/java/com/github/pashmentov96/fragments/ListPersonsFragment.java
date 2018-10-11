@@ -35,6 +35,6 @@ public class ListPersonsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         StorageOfPersons.generate();
-        adapter.setPersonList(StorageOfPersons.getPersonList());
+        adapter.setPersonList((MainActivity)getActivity(), StorageOfPersons.getPersonList());
     }
 }
