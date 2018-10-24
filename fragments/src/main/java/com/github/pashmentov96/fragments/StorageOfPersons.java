@@ -1,7 +1,10 @@
 package com.github.pashmentov96.fragments;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class StorageOfPersons {
     private static List<Person> personList = new ArrayList<>();
@@ -9,6 +12,12 @@ public class StorageOfPersons {
     public static void generate() {
         if (!isGenerated) {
             for (int i = 0; i < 5; ++i) {
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d("MyLogs", String.valueOf(i));
                 personList.add(new Person(5 * i, "Max" + String.valueOf(i),
                         "Please, give me something", R.drawable.kotiki));
                 personList.add(new Person(5 * i + 1, "Vasya" + String.valueOf(i),
