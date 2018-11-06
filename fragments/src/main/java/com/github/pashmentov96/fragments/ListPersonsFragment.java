@@ -52,7 +52,11 @@ public class ListPersonsFragment extends Fragment {
         adapter = new PersonAdapter();
         recyclerView.setAdapter(adapter);
 
-        loadPersons();
+        if (StorageOfPersons.getIsCached()) {
+            adapter.setPersonList((ViewHolderListener) getActivity(), StorageOfPersons.getPersonList());
+        } else {
+            loadPersons();
+        }
         Log.d(LOG, "after loading");
     }
 

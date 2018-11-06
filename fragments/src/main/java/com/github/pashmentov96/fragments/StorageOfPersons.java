@@ -29,4 +29,8 @@ public class StorageOfPersons {
        }
        return personList.get(position);
     }
+
+    public static boolean getIsCached() {
+        return isCached;
+    }
 }
