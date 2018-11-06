@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 public class ProfileFragment extends Fragment {
     private static String NAME_KEY = "NAME_KEY";
 
-    public static Fragment newInstance(long id) {
+    public static Fragment newInstance(int id) {
         Fragment fragment = new ProfileFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putLong(NAME_KEY, id);
+        arguments.putInt(NAME_KEY, id);
 
         fragment.setArguments(arguments);
 
@@ -35,9 +38,9 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        long id = getArguments().getLong(NAME_KEY);
-
-        Person person = StorageOfPersons.getPersonById(id);
+        int id = getArguments().getInt(NAME_KEY);
+        Log.d("MyLogs", String.valueOf(id));
+        Person person = StorageOfPersons.getPerson(id);
 
         EditText aboutProfile = view.findViewById(R.id.aboutProfile);
         aboutProfile.setText(person.getNote());
@@ -46,6 +49,8 @@ public class ProfileFragment extends Fragment {
         name.setText(person.getName());
 
         ImageView photo = view.findViewById(R.id.photo);
-        photo.setImageResource(person.getImageRes());
+        Picasso.get()
+                .load(person.getImageURL())
+                .into(photo);
     }
 }

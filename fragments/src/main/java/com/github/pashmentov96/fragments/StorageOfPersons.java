@@ -8,28 +8,14 @@ import java.util.concurrent.TimeUnit;
 
 public class StorageOfPersons {
     private static List<Person> personList = new ArrayList<>();
-    private static boolean isGenerated = false;
-    public static void generate() {
-        if (!isGenerated) {
-            for (int i = 0; i < 5; ++i) {
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Log.d("MyLogs", String.valueOf(i));
-                personList.add(new Person(5 * i, "Max" + String.valueOf(i),
-                        "Please, give me something", R.drawable.kotiki));
-                personList.add(new Person(5 * i + 1, "Vasya" + String.valueOf(i),
-                        "I am very pretty :)", R.drawable.kotiki1));
-                personList.add(new Person(5 * i + 2, "Masha" + String.valueOf(i),
-                        "Oh.. I very sad now", R.drawable.kotiki2));
-                personList.add(new Person(5 * i + 3, "Musya" + String.valueOf(i),
-                        "I like boxes", R.drawable.kotiki3));
-                personList.add(new Person(5 * i + 4, "Boris" + String.valueOf(i),
-                        "I like sleep", R.drawable.kotiki4));
+    private static boolean isCached = false;
+    public static void addPersons(List<Person> persons) {
+        if (!isCached) {
+            for (int i = 0; i < persons.size(); ++i) {
+                Log.d("MyLogs", i + " " + persons.get(i).getName() + " " + persons.get(i).getNote() + " " + persons.get(i).getImageURL());
             }
-            isGenerated = true;
+            personList = persons;
+            isCached = true;
         }
     }
 
@@ -37,12 +23,10 @@ public class StorageOfPersons {
         return personList;
     }
 
-    public static Person getPersonById(long id) {
-        for (Person person : personList) {
-            if (person.getId() == id) {
-                return person;
-            }
-        }
-        return null;
+    public static Person getPerson(int position) {
+       if (position >= personList.size()) {
+           return null;
+       }
+       return personList.get(position);
     }
 }

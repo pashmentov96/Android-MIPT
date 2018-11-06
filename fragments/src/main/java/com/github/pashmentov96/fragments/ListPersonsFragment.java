@@ -12,13 +12,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
 
 public class ListPersonsFragment extends Fragment {
 
-    private static MyAsyncTask generatePersonsTask;
-    final String LOG = "MyLogs";
     private PersonAdapter adapter;
+    final String LOG = "MyLogs";
+    final String BASE_URL = "http://demo1155324.mockable.io/";
 
     public static Fragment newInstance() {
         return new ListPersonsFragment();
@@ -42,39 +52,52 @@ public class ListPersonsFragment extends Fragment {
         adapter = new PersonAdapter();
         recyclerView.setAdapter(adapter);
 
-        generatePersonsTask = new MyAsyncTask();
-        generatePersonsTask.execute();
+        loadPersons();
+        Log.d(LOG, "after loading");
     }
 
-    class MyAsyncTask extends AsyncTask<Void, Void, List<Person>> {
-        @Override
-        protected List<Person> doInBackground(Void... voids) {
-            Log.d(LOG, "begin");
-            StorageOfPersons.generate();
-            Log.d(LOG, "end");
-            return StorageOfPersons.getPersonList();
-        }
+    private void loadPersons() {
+        Log.d(LOG, "start loading");
+        Retrofit retrofit = new Retrofit
+                .Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        PersonsAPI personsAPI = retrofit.create(PersonsAPI.class);
 
-        @Override
-        protected void onPostExecute(List<Person> people) {
-            super.onPostExecute(people);
-            adapter.setPersonList((ViewHolderListener) getActivity(), people);
-            Log.d(LOG, "onPostExecute");
-        }
+        Call<Persons> persons = personsAPI.getPersons();
 
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            Log.d(LOG, "onCancelled");
+        persons.enqueue(new Callback<Persons>() {
+            @Override
+            public void onResponse(Call<Persons> call, Response<Persons> response) {
+                if (response.isSuccessful()) {
+                    StorageOfPersons.addPersons(response.body().getPersonList());
+                    Log.d(LOG, "SIZE = " + StorageOfPersons.getPersonList().size());
+                    adapter.setPersonList((ViewHolderListener) getActivity(), StorageOfPersons.getPersonList());
+                } else {
+                    Log.d(LOG, "response code " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Persons> call, Throwable t) {
+                Log.d(LOG, "failure " + t);
+            }
+        });
+        Log.d(LOG, "finish loading");
+    }
+
+    public class Persons {
+        @SerializedName("persons")
+        private List<Person> personList = new ArrayList<>();
+
+        public List<Person> getPersonList() {
+            return personList;
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(LOG, "ListPersonsFragment: onStop");
-        if (generatePersonsTask != null) {
-            generatePersonsTask.cancel(true);
-        }
+    public interface PersonsAPI {
+        @GET("person/all")
+        Call<Persons> getPersons();
     }
 }

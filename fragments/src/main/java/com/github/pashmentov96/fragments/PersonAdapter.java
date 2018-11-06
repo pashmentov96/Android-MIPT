@@ -3,11 +3,14 @@ package com.github.pashmentov96.fragments;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +37,11 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
     public void onBindViewHolder(@NonNull PersonViewHolder holder, int position) {
         Person currentPerson = personList.get(position);
         holder.personName.setText(currentPerson.getName());
-        holder.photo.setImageResource(currentPerson.getImageRes());
-        holder.setId(currentPerson.getId());
+        Picasso.get()
+                .load(currentPerson.getImageURL())
+                .into(holder.photo);
+        holder.setId(position);
+        Log.d("MyLogs", "Position = " + position);
     }
 
     @Override
@@ -46,7 +52,7 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
         private TextView personName;
         private ImageView photo;
-        private long id;
+        private int id;
         private ViewHolderListener listener;
 
         public PersonViewHolder(View itemView, ViewHolderListener listener) {
@@ -58,12 +64,13 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
             personItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("MyLogs", "Id in Listener " + id);
                     PersonViewHolder.this.listener.onPersonClicked(id);
                 }
             });
         }
 
-        public void setId(long id) {
+        public void setId(int id) {
             this.id = id;
         }
     }
