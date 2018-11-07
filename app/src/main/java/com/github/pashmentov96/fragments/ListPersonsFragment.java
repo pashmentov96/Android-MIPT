@@ -1,6 +1,5 @@
 package com.github.pashmentov96.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
