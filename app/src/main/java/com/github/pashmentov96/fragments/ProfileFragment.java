@@ -40,7 +40,9 @@ public class ProfileFragment extends Fragment {
 
         int id = getArguments().getInt(NAME_KEY);
         Log.d("MyLogs", String.valueOf(id));
-        Person person = StorageOfPersons.getPerson(id);
+        PersonRepository personRepository = new PersonRepository(view.getContext());
+        Person person = personRepository.findPersonById(id);
+        Log.d("MyLogs", person.getName());
 
         EditText aboutProfile = view.findViewById(R.id.aboutProfile);
         aboutProfile.setText(person.getNote());

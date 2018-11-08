@@ -29,6 +29,8 @@ public class ListPersonsFragment extends Fragment {
     final String LOG = "MyLogs";
     final String BASE_URL = "http://demo1155324.mockable.io/";
 
+    private PersonRepository personRepository;
+
     public static Fragment newInstance() {
         return new ListPersonsFragment();
     }
@@ -51,12 +53,18 @@ public class ListPersonsFragment extends Fragment {
         adapter = new PersonAdapter();
         recyclerView.setAdapter(adapter);
 
-        if (StorageOfPersons.getIsCached()) {
-            adapter.setPersonList((ViewHolderListener) getActivity(), StorageOfPersons.getPersonList());
+        MyPreferences myPreferences = new MyPreferences(view.getContext());
+        personRepository = new PersonRepository(view.getContext());
+        if (myPreferences.getVariable()) {
+            Log.d(LOG, "Variable is true");
+            List<Person> personList = personRepository.loadPersons();
+            Log.d(LOG, "Size = " + personList.size());
+            adapter.setPersonList((ViewHolderListener) getActivity(), personList);
         } else {
+            Log.d(LOG, "Variable is false");
+            myPreferences.setVariable(true);
             loadPersons();
         }
-        Log.d(LOG, "after loading");
     }
 
     private void loadPersons() {
@@ -74,9 +82,12 @@ public class ListPersonsFragment extends Fragment {
             @Override
             public void onResponse(Call<Persons> call, Response<Persons> response) {
                 if (response.isSuccessful()) {
-                    StorageOfPersons.addPersons(response.body().getPersonList());
-                    Log.d(LOG, "SIZE = " + StorageOfPersons.getPersonList().size());
-                    adapter.setPersonList((ViewHolderListener) getActivity(), StorageOfPersons.getPersonList());
+                    List<Person> personList = response.body().getPersonList();
+                    Log.d(LOG, "SIZE = " + personList.size());
+                    for (int i = 0; i < personList.size(); ++i) {
+                        personRepository.addPerson(personList.get(i));
+                    }
+                    adapter.setPersonList((ViewHolderListener) getActivity(), personList);
                 } else {
                     Log.d(LOG, "response code " + response.code());
                 }
