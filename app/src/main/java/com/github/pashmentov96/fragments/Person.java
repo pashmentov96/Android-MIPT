@@ -1,20 +1,18 @@
 package com.github.pashmentov96.fragments;
 
-public class Person {
-    private long id;
-    private String name;
-    private String note;
-    private int imageRes;
+import com.google.gson.annotations.SerializedName;
 
-    public Person(long id, String name, String note, int imageRes) {
-        this.id = id;
+public class Person {
+    private String name;
+    @SerializedName("info")
+    private String note;
+    @SerializedName("image")
+    private String imageURL;
+
+    public Person(String name, String note, String imageURL) {
         this.name = name;
         this.note = note;
-        this.imageRes = imageRes;
-    }
-
-    public long getId() {
-        return id;
+        this.imageURL = imageURL;
     }
 
     public String getName() {
@@ -25,7 +23,7 @@ public class Person {
         return note;
     }
 
-    public int getImageRes() {
-        return imageRes;
+    public String getImageURL() {
+        return imageURL;
     }
 }

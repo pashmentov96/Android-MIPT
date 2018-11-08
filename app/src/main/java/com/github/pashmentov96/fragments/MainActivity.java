@@ -6,18 +6,19 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements ViewHolderListener {
 
     @Override
-    public void onPersonClicked(long id) {
+    public void onPersonClicked(int id) {
         showProfileFragment(id);
     }
 
     private static String PROFILE_ON_DETAIL_CONTAINER = "Profile on detail container";
     private static String PROFILE_ON_MAIN_CONTAINER = "Profile on main container";
-    private static long lastId;
+    private static int lastId;
 
     public static Intent getIntent(@NonNull final Context context) {
         return new Intent(context, MainActivity.class);
@@ -49,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements ViewHolderListene
         }
     }
 
-    public void showProfileFragment(long id) {
+    public void showProfileFragment(int id) {
+        Log.d("MyLogs", "ProfileId = " + id);
         lastId = id;
         View detailView = findViewById(R.id.detailContainer);
         if (detailView == null) {
