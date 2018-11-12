@@ -27,7 +27,7 @@ public class ListPersonsFragment extends Fragment {
 
     private PersonAdapter adapter;
     final String LOG = "MyLogs";
-    final String BASE_URL = "http://demo1155324.mockable.io/";
+    final String BASE_URL = "https://demo1155324.mockable.io/";
 
     private PersonRepository personRepository;
 
@@ -53,16 +53,16 @@ public class ListPersonsFragment extends Fragment {
         adapter = new PersonAdapter();
         recyclerView.setAdapter(adapter);
 
-        MyPreferences myPreferences = new MyPreferences(view.getContext());
+        AppPreferences myPreferences = new AppPreferences(view.getContext());
         personRepository = new PersonRepository(view.getContext());
-        if (myPreferences.getVariable()) {
+        if (myPreferences.isLoadedFromNet()) {
             Log.d(LOG, "Variable is true");
             List<Person> personList = personRepository.loadPersons();
             Log.d(LOG, "Size = " + personList.size());
             adapter.setPersonList((ViewHolderListener) getActivity(), personList);
         } else {
             Log.d(LOG, "Variable is false");
-            myPreferences.setVariable(true);
+            myPreferences.setLoadedFromNet(true);
             loadPersons();
         }
     }

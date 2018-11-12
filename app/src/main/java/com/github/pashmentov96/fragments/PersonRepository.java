@@ -10,21 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonRepository {
-    private final MySQLiteOpenHelper mySQLiteOpenHelper;
+    private final AppSQLiteOpenHelper mySQLiteOpenHelper;
 
     public PersonRepository(Context context) {
-        mySQLiteOpenHelper = new MySQLiteOpenHelper(context);
+        mySQLiteOpenHelper = new AppSQLiteOpenHelper(context);
     }
 
     public void addPerson(Person person) {
         SQLiteDatabase database = mySQLiteOpenHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(MySQLiteOpenHelper.Columns.NAME, person.getName());
-        contentValues.put(MySQLiteOpenHelper.Columns.NOTE, person.getNote());
-        contentValues.put(MySQLiteOpenHelper.Columns.IMAGE_URL, person.getImageURL());
+        contentValues.put(PersonContract.Columns.NAME, person.getName());
+        contentValues.put(PersonContract.Columns.NOTE, person.getNote());
+        contentValues.put(PersonContract.Columns.IMAGE_URL, person.getImageURL());
 
-        database.insert(MySQLiteOpenHelper.TABLE_NAME, null, contentValues);
+        database.insert(PersonContract.TABLE_NAME, null, contentValues);
     }
 
     public List<Person> loadPersons() {
@@ -32,25 +32,31 @@ public class PersonRepository {
 
         SQLiteDatabase database = mySQLiteOpenHelper.getWritableDatabase();
 
-        Cursor cursor = database.query(
-                MySQLiteOpenHelper.TABLE_NAME,
-                new String[] {MySQLiteOpenHelper.Columns._ID, MySQLiteOpenHelper.Columns.NAME, MySQLiteOpenHelper.Columns.NOTE, MySQLiteOpenHelper.Columns.IMAGE_URL},
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        Cursor cursor = null;
+        try {
+            cursor = database.query(
+                    PersonContract.TABLE_NAME,
+                    new String[]{PersonContract.Columns._ID, PersonContract.Columns.NAME, PersonContract.Columns.NOTE, PersonContract.Columns.IMAGE_URL},
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
 
-        while (cursor.moveToNext()) {
-            Person person = new Person(
-                    cursor.getString(cursor.getColumnIndex(MySQLiteOpenHelper.Columns.NAME)),
-                    cursor.getString(cursor.getColumnIndex(MySQLiteOpenHelper.Columns.NOTE)),
-                    cursor.getString(cursor.getColumnIndex(MySQLiteOpenHelper.Columns.IMAGE_URL))
-                    );
-            personList.add(person);
+            while (cursor.moveToNext()) {
+                Person person = new Person(
+                        cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NAME)),
+                        cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NOTE)),
+                        cursor.getString(cursor.getColumnIndex(PersonContract.Columns.IMAGE_URL))
+                );
+                personList.add(person);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        cursor.close();
         return personList;
     }
 
@@ -58,26 +64,32 @@ public class PersonRepository {
         Log.d("MyLogs", "I want to find " + id);
         SQLiteDatabase database = mySQLiteOpenHelper.getWritableDatabase();
 
-        Cursor cursor = database.query(
-                MySQLiteOpenHelper.TABLE_NAME,
-                new String[] {MySQLiteOpenHelper.Columns._ID, MySQLiteOpenHelper.Columns.NAME, MySQLiteOpenHelper.Columns.NOTE, MySQLiteOpenHelper.Columns.IMAGE_URL},
-                MySQLiteOpenHelper.Columns._ID + " = " + String.valueOf(id + 1),
-                null,
-                null,
-                null,
-                null
-        );
-        if (cursor.getCount() != 1) {
-            return null;
+        Cursor cursor = null;
+        Person person = null;
+        try {
+            cursor = database.query(
+                    PersonContract.TABLE_NAME,
+                    new String[]{PersonContract.Columns._ID, PersonContract.Columns.NAME, PersonContract.Columns.NOTE, PersonContract.Columns.IMAGE_URL},
+                    PersonContract.Columns._ID + " = " + String.valueOf(id + 1),
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            if (cursor.getCount() == 1) {
+                Log.d("MyLogs", String.valueOf(cursor.getPosition()));
+                cursor.moveToFirst();
+                person = new Person(
+                        cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NAME)),
+                        cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NOTE)),
+                        cursor.getString(cursor.getColumnIndex(PersonContract.Columns.IMAGE_URL))
+                );
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        Log.d("MyLogs", String.valueOf(cursor.getPosition()));
-        cursor.moveToFirst();
-        Person person = new Person(
-                    cursor.getString(cursor.getColumnIndex(MySQLiteOpenHelper.Columns.NAME)),
-                    cursor.getString(cursor.getColumnIndex(MySQLiteOpenHelper.Columns.NOTE)),
-                    cursor.getString(cursor.getColumnIndex(MySQLiteOpenHelper.Columns.IMAGE_URL))
-        );
-        cursor.close();
         Log.d("MyLogs", person.getName());
         return person;
     }
