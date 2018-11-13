@@ -26,4 +26,9 @@ public class Person {
     public String getImageURL() {
         return imageURL;
     }
+
+    @Override
+    public String toString() {
+        return name + ";" + note + ";" + imageURL;
+    }
 }
