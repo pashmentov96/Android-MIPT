@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
-    private static String NAME_KEY = "NAME_KEY";
+    private static final String NAME_KEY = "NAME_KEY";
 
     public static Fragment newInstance(int id) {
         Fragment fragment = new ProfileFragment();
@@ -40,7 +40,7 @@ public class ProfileFragment extends Fragment {
 
         int id = getArguments().getInt(NAME_KEY);
         Log.d("MyLogs", String.valueOf(id));
-        PersonRepository personRepository = new PersonRepository(view.getContext());
+        DatabasePersonStorage personRepository = new DatabasePersonStorage(view.getContext());
         Person person = personRepository.findPersonById(id);
         Log.d("MyLogs", person.getName());
 

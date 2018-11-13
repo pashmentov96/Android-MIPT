@@ -1,33 +1,23 @@
 package com.github.pashmentov96.fragments;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
 
 public class ListPersonsFragment extends Fragment {
 
     private PersonAdapter adapter;
-    final String LOG = "MyLogs";
-    final String BASE_URL = "https://demo1155324.mockable.io/";
+    private static final String LOG = "MyLogs";
 
     private PersonRepository personRepository;
 
@@ -53,65 +43,22 @@ public class ListPersonsFragment extends Fragment {
         adapter = new PersonAdapter();
         recyclerView.setAdapter(adapter);
 
-        AppPreferences myPreferences = new AppPreferences(view.getContext());
         personRepository = new PersonRepository(view.getContext());
-        if (myPreferences.isLoadedFromNet()) {
-            Log.d(LOG, "Variable is true");
-            List<Person> personList = personRepository.loadPersons();
-            Log.d(LOG, "Size = " + personList.size());
-            adapter.setPersonList((ViewHolderListener) getActivity(), personList);
-        } else {
-            Log.d(LOG, "Variable is false");
-            myPreferences.setLoadedFromNet(true);
-            loadPersons();
-        }
-    }
 
-    private void loadPersons() {
-        Log.d(LOG, "start loading");
-        Retrofit retrofit = new Retrofit
-                .Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        PersonsAPI personsAPI = retrofit.create(PersonsAPI.class);
-
-        Call<Persons> persons = personsAPI.getPersons();
-
-        persons.enqueue(new Callback<Persons>() {
+        @SuppressLint("StaticFieldLeak")
+        AsyncTask task = new AsyncTask<Void, Void, List<Person>>() {
             @Override
-            public void onResponse(Call<Persons> call, Response<Persons> response) {
-                if (response.isSuccessful()) {
-                    List<Person> personList = response.body().getPersonList();
-                    Log.d(LOG, "SIZE = " + personList.size());
-                    for (int i = 0; i < personList.size(); ++i) {
-                        personRepository.addPerson(personList.get(i));
-                    }
-                    adapter.setPersonList((ViewHolderListener) getActivity(), personList);
-                } else {
-                    Log.d(LOG, "response code " + response.code());
-                }
+            protected List<Person> doInBackground(Void... voids) {
+                return personRepository.loadPersons();
             }
 
             @Override
-            public void onFailure(Call<Persons> call, Throwable t) {
-                Log.d(LOG, "failure " + t);
+            protected void onPostExecute(List<Person> personList) {
+                super.onPostExecute(personList);
+
+                adapter.setPersonList((ViewHolderListener) getActivity(), personList);
             }
-        });
-        Log.d(LOG, "finish loading");
-    }
 
-    public class Persons {
-        @SerializedName("persons")
-        private List<Person> personList = new ArrayList<>();
-
-        public List<Person> getPersonList() {
-            return personList;
-        }
-    }
-
-    public interface PersonsAPI {
-        @GET("person/all")
-        Call<Persons> getPersons();
+        }.execute();
     }
 }

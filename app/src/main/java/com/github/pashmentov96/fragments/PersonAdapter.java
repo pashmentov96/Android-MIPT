@@ -1,6 +1,5 @@
 package com.github.pashmentov96.fragments;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +17,7 @@ import java.util.List;
 class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder> {
     private List<Person> personList = new ArrayList<>();
     private ViewHolderListener listener;
+    private static final String LOG = "MyLogs";
 
     public void setPersonList(ViewHolderListener listener, List<Person> personList) {
         this.listener = listener;
@@ -41,7 +41,7 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
                 .load(currentPerson.getImageURL())
                 .into(holder.photo);
         holder.setId(position);
-        Log.d("MyLogs", "Position = " + position);
+        Log.d(LOG, "Position = " + position);
     }
 
     @Override
@@ -64,7 +64,7 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
             personItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("MyLogs", "Id in Listener " + id);
+                    Log.d(LOG, "Id in Listener " + id);
                     PersonViewHolder.this.listener.onPersonClicked(id);
                 }
             });
