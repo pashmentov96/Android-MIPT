@@ -7,6 +7,7 @@ public class PersonContract {
     public static final String TABLE_NAME = "person_table";
 
     public interface Columns extends BaseColumns {
+        String ID = "ID";
         String NAME = "name";
         String NOTE = "note";
         String IMAGE_URL = "ImageURL";
@@ -17,6 +18,7 @@ public class PersonContract {
                 "CREATE TABLE " + TABLE_NAME
                         + " ( "
                         + PersonContract.Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + PersonContract.Columns.ID + " INTEGER,"
                         + PersonContract.Columns.NAME + " TEXT NOT NULL,"
                         + PersonContract.Columns.NOTE + " TEXT NOT NULL,"
                         + PersonContract.Columns.IMAGE_URL + " TEXT NOT NULL"

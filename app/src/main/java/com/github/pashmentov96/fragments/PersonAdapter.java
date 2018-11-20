@@ -40,7 +40,7 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
         Picasso.get()
                 .load(currentPerson.getImageURL())
                 .into(holder.photo);
-        holder.setId(position);
+        holder.id = currentPerson.getId();
         Log.d(LOG, "Position = " + position);
     }
 
@@ -68,10 +68,6 @@ class PersonAdapter extends RecyclerView.Adapter <PersonAdapter.PersonViewHolder
                     PersonViewHolder.this.listener.onPersonClicked(id);
                 }
             });
-        }
-
-        public void setId(int id) {
-            this.id = id;
         }
     }
 
