@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.List;
@@ -45,43 +46,23 @@ public class BackupService extends Service {
         String filename = "backup-" + String.valueOf(Calendar.getInstance().getTime().getTime());
         Log.d(LOG, filename);
 
-        FileOutputStream outputStream = null;
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+        try (FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE)) {
             PersonRepository personRepository = new PersonRepository(this);
             List<Person> personList = personRepository.loadPersons();
             outputStream.write(personList.toString().getBytes());
             Log.d(LOG, personList.toString());
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
     private void readBackup(String backupFilename) {
-        FileInputStream input = null;
-        try {
-            input = openFileInput(backupFilename);
+        try (FileInputStream input = openFileInput(backupFilename)) {
             byte[] bytes = new byte[input.available()];
             int result = input.read(bytes);
             Log.d(LOG, "!!! + " + result + " = " + new String(bytes));
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
