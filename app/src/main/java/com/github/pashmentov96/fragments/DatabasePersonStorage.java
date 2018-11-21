@@ -21,7 +21,7 @@ public class DatabasePersonStorage {
         SQLiteDatabase database = mySQLiteOpenHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PersonContract.Columns.ID, person.getId());
+        contentValues.put(PersonContract.Columns._ID, person.getId());
         contentValues.put(PersonContract.Columns.NAME, person.getName());
         contentValues.put(PersonContract.Columns.NOTE, person.getNote());
         contentValues.put(PersonContract.Columns.IMAGE_URL, person.getImageURL());
@@ -44,7 +44,7 @@ public class DatabasePersonStorage {
         try {
             cursor = database.query(
                     PersonContract.TABLE_NAME,
-                    new String[]{PersonContract.Columns.ID, PersonContract.Columns.NAME, PersonContract.Columns.NOTE, PersonContract.Columns.IMAGE_URL},
+                    new String[]{PersonContract.Columns._ID, PersonContract.Columns.NAME, PersonContract.Columns.NOTE, PersonContract.Columns.IMAGE_URL},
                     null,
                     null,
                     null,
@@ -54,7 +54,7 @@ public class DatabasePersonStorage {
 
             while (cursor.moveToNext()) {
                 Person person = new Person(
-                        cursor.getInt(cursor.getColumnIndex(PersonContract.Columns.ID)),
+                        cursor.getInt(cursor.getColumnIndex(PersonContract.Columns._ID)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NAME)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NOTE)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.IMAGE_URL))
@@ -78,8 +78,8 @@ public class DatabasePersonStorage {
         try {
             cursor = database.query(
                     PersonContract.TABLE_NAME,
-                    new String[]{PersonContract.Columns.ID, PersonContract.Columns.NAME, PersonContract.Columns.NOTE, PersonContract.Columns.IMAGE_URL},
-                    PersonContract.Columns.ID + " = " + "?",
+                    new String[]{PersonContract.Columns._ID, PersonContract.Columns.NAME, PersonContract.Columns.NOTE, PersonContract.Columns.IMAGE_URL},
+                    PersonContract.Columns._ID + " = " + "?",
                     new String[]{String.valueOf(id)},
                     null,
                     null,
@@ -88,7 +88,7 @@ public class DatabasePersonStorage {
             if (cursor.getCount() == 1) {
                 cursor.moveToFirst();
                 person = new Person(
-                        cursor.getInt(cursor.getColumnIndex(PersonContract.Columns.ID)),
+                        cursor.getInt(cursor.getColumnIndex(PersonContract.Columns._ID)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NAME)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NOTE)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.IMAGE_URL))
