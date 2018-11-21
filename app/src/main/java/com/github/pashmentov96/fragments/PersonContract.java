@@ -16,7 +16,7 @@ public class PersonContract {
         db.execSQL(
                 "CREATE TABLE " + TABLE_NAME
                         + " ( "
-                        + PersonContract.Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + PersonContract.Columns._ID + " INTEGER PRIMARY KEY,"
                         + PersonContract.Columns.NAME + " TEXT NOT NULL,"
                         + PersonContract.Columns.NOTE + " TEXT NOT NULL,"
                         + PersonContract.Columns.IMAGE_URL + " TEXT NOT NULL"

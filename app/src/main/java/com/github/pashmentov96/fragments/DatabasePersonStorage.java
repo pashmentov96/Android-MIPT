@@ -21,6 +21,7 @@ public class DatabasePersonStorage {
         SQLiteDatabase database = mySQLiteOpenHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
+        contentValues.put(PersonContract.Columns._ID, person.getId());
         contentValues.put(PersonContract.Columns.NAME, person.getName());
         contentValues.put(PersonContract.Columns.NOTE, person.getNote());
         contentValues.put(PersonContract.Columns.IMAGE_URL, person.getImageURL());
@@ -30,7 +31,7 @@ public class DatabasePersonStorage {
 
     public void addPersons(List<Person> personList) {
         for (int i = 0; i < personList.size(); ++i) {
-            this.addPerson(personList.get(i));
+           this.addPerson(personList.get(i));
         }
     }
 
@@ -53,6 +54,7 @@ public class DatabasePersonStorage {
 
             while (cursor.moveToNext()) {
                 Person person = new Person(
+                        cursor.getInt(cursor.getColumnIndex(PersonContract.Columns._ID)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NAME)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NOTE)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.IMAGE_URL))
@@ -77,16 +79,16 @@ public class DatabasePersonStorage {
             cursor = database.query(
                     PersonContract.TABLE_NAME,
                     new String[]{PersonContract.Columns._ID, PersonContract.Columns.NAME, PersonContract.Columns.NOTE, PersonContract.Columns.IMAGE_URL},
-                    PersonContract.Columns._ID + " = " + String.valueOf(id + 1),
-                    null,
+                    PersonContract.Columns._ID + " = " + "?",
+                    new String[]{String.valueOf(id)},
                     null,
                     null,
                     null
             );
             if (cursor.getCount() == 1) {
-                Log.d(LOG, String.valueOf(cursor.getPosition()));
                 cursor.moveToFirst();
                 person = new Person(
+                        cursor.getInt(cursor.getColumnIndex(PersonContract.Columns._ID)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NAME)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.NOTE)),
                         cursor.getString(cursor.getColumnIndex(PersonContract.Columns.IMAGE_URL))

@@ -1,5 +1,7 @@
 package com.github.pashmentov96.fragments;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,24 +37,37 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        int id = getArguments().getInt(NAME_KEY);
-        Log.d("MyLogs", String.valueOf(id));
-        DatabasePersonStorage personRepository = new DatabasePersonStorage(view.getContext());
-        Person person = personRepository.findPersonById(id);
-        Log.d("MyLogs", person.getName());
+        final int id = getArguments().getInt(NAME_KEY);
+        Log.d("MyLogs", "Id in onViewCreated " + String.valueOf(id));
 
-        EditText aboutProfile = view.findViewById(R.id.aboutProfile);
-        aboutProfile.setText(person.getNote());
 
-        TextView name = view.findViewById(R.id.name);
-        name.setText(person.getName());
+        @SuppressLint("StaticFieldLeak")
+        AsyncTask task = new AsyncTask<Void, Void, Person>() {
+            @Override
+            protected Person doInBackground(Void... voids) {
+                DatabasePersonStorage personRepository = new DatabasePersonStorage(view.getContext());
+                return personRepository.findPersonById(id);
+            }
 
-        ImageView photo = view.findViewById(R.id.photo);
-        Picasso.get()
-                .load(person.getImageURL())
-                .into(photo);
+            @Override
+            protected void onPostExecute(Person person) {
+                super.onPostExecute(person);
+                Log.d("MyLogs", person.getName());
+
+                EditText aboutProfile = view.findViewById(R.id.aboutProfile);
+                aboutProfile.setText(person.getNote());
+
+                TextView name = view.findViewById(R.id.name);
+                name.setText(person.getName());
+
+                ImageView photo = view.findViewById(R.id.photo);
+                Picasso.get()
+                        .load(person.getImageURL())
+                        .into(photo);
+            }
+        }.execute();
     }
 }

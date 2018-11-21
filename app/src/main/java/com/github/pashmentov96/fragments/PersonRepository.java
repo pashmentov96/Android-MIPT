@@ -16,8 +16,10 @@ public class PersonRepository {
 
     public List<Person> loadPersons() {
         if (appPreferences.isLoadedFromNet()) {
+            Log.d("MyLogs", "isLoaded = true");
             return databasePersonStorage.loadPersons();
         } else {
+            Log.d("MyLogs", " isLoaded = false");
             NetPersonLoader netPersonLoader = new NetPersonLoader();
             List<Person> personList = netPersonLoader.loadPersons();
             databasePersonStorage.addPersons(personList);
