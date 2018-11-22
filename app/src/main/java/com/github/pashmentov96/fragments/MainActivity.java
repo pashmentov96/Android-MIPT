@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements ViewHolderListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        BackupService.getAllBackups(this);
+        BackupService.addBackup(this);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
