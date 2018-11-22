@@ -16,8 +16,9 @@ public class MainActivity extends AppCompatActivity implements ViewHolderListene
         showProfileFragment(id);
     }
 
-    private static String PROFILE_ON_DETAIL_CONTAINER = "Profile on detail container";
-    private static String PROFILE_ON_MAIN_CONTAINER = "Profile on main container";
+    private static final String PROFILE_ON_DETAIL_CONTAINER = "Profile on detail container";
+    private static final String PROFILE_ON_MAIN_CONTAINER = "Profile on main container";
+    private static final String LOG = "MyLogs";
     private static int lastId;
 
     public static Intent getIntent(@NonNull final Context context) {
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements ViewHolderListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements ViewHolderListene
     }
 
     public void showProfileFragment(int id) {
-        Log.d("MyLogs", "ProfileId = " + id);
+        Log.d(LOG, "ProfileId = " + id);
         lastId = id;
         View detailView = findViewById(R.id.detailContainer);
         if (detailView == null) {
