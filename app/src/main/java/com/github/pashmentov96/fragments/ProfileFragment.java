@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment implements GestureDetector.OnGestu
             @Override
             protected void onPostExecute(Person person) {
                 super.onPostExecute(person);
-                Log.d("MyLogs", person.getName());
+                Log.d(LOG, person.getName());
 
                 EditText aboutProfile = view.findViewById(R.id.aboutProfile);
                 aboutProfile.setText(person.getNote());
@@ -121,7 +121,6 @@ public class ProfileFragment extends Fragment implements GestureDetector.OnGestu
         float dy = e2.getY() - e1.getY();
         float dx = e2.getX() - e1.getX();
         if (Math.abs(dy) > Math.abs(dx) && dy > SWIPE_THRESHOLD) {
-            Toast.makeText(getContext(), "swipe!!!", Toast.LENGTH_SHORT).show();
             ((ProfileListener)getActivity()).onProfileSwipe();
         }
         return false;
