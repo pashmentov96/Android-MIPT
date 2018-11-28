@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements ViewHolderListener {
+public class MainActivity extends AppCompatActivity implements ViewHolderListener, ProfileListener {
 
     @Override
     public void onPersonClicked(int id) {
@@ -80,5 +80,10 @@ public class MainActivity extends AppCompatActivity implements ViewHolderListene
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onProfileSwipe() {
+        onBackPressed();
     }
 }

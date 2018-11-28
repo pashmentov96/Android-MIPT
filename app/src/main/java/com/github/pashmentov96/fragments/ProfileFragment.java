@@ -6,18 +6,25 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements GestureDetector.OnGestureListener {
     private static final String NAME_KEY = "NAME_KEY";
+    private static final String LOG = "MyLogs";
+    private static final float SWIPE_THRESHOLD = 100;
+    private GestureDetectorCompat gestureDetector;
 
     public static Fragment newInstance(int id) {
         Fragment fragment = new ProfileFragment();
@@ -41,8 +48,17 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         final int id = getArguments().getInt(NAME_KEY);
-        Log.d("MyLogs", "Id in onViewCreated " + String.valueOf(id));
+        Log.d(LOG, "Id in onViewCreated " + String.valueOf(id));
 
+        gestureDetector = new GestureDetectorCompat(view.getContext(), this);
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
 
         @SuppressLint("StaticFieldLeak")
         AsyncTask task = new AsyncTask<Void, Void, Person>() {
@@ -69,5 +85,45 @@ public class ProfileFragment extends Fragment {
                         .into(photo);
             }
         }.execute();
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        Log.d(LOG, "onDown: " + e.toString());
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        Log.d(LOG, "onShowPress: " + e.toString());
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        Log.d(LOG, "onSingleTapUp: " + e.toString());
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d(LOG, "onScroll: " + e1.toString() + " " + e2.toString());
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        Log.d(LOG, "onLongPress: " + e.toString());
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        Log.d(LOG, "onFling: " + e1.toString() + " " + e2.toString());
+        float dy = e2.getY() - e1.getY();
+        float dx = e2.getX() - e1.getX();
+        if (Math.abs(dy) > Math.abs(dx) && dy > SWIPE_THRESHOLD) {
+            Toast.makeText(getContext(), "swipe!!!", Toast.LENGTH_SHORT).show();
+            ((ProfileListener)getActivity()).onProfileSwipe();
+        }
+        return false;
     }
 }
