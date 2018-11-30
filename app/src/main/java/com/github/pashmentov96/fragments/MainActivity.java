@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements ViewHolderListener, ProfileListener {
+public class MainActivity extends AppCompatActivity implements ViewHolderListener, SimpleListener {
 
     @Override
     public void onPersonClicked(int id) {
