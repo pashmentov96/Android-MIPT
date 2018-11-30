@@ -16,11 +16,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment implements GestureDetector.OnGestureListener {
+public class ProfileFragment extends Fragment {
     private static final String NAME_KEY = "NAME_KEY";
     private static final String LOG = "MyLogs";
     private static final float SWIPE_THRESHOLD = 100;
@@ -50,7 +49,18 @@ public class ProfileFragment extends Fragment implements GestureDetector.OnGestu
         final int id = getArguments().getInt(NAME_KEY);
         Log.d(LOG, "Id in onViewCreated " + String.valueOf(id));
 
-        gestureDetector = new GestureDetectorCompat(view.getContext(), this);
+        gestureDetector = new GestureDetectorCompat(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                Log.d(LOG, "onFling: " + e1.toString() + " " + e2.toString());
+                float dy = e2.getY() - e1.getY();
+                float dx = e2.getX() - e1.getX();
+                if (Math.abs(dy) > Math.abs(dx) && dy > SWIPE_THRESHOLD) {
+                    ((SimpleListener)getActivity()).onProfileSwipe();
+                }
+                return false;
+            }
+        });
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -85,44 +95,5 @@ public class ProfileFragment extends Fragment implements GestureDetector.OnGestu
                         .into(photo);
             }
         }.execute();
-    }
-
-    @Override
-    public boolean onDown(MotionEvent e) {
-        Log.d(LOG, "onDown: " + e.toString());
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-        Log.d(LOG, "onShowPress: " + e.toString());
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        Log.d(LOG, "onSingleTapUp: " + e.toString());
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d(LOG, "onScroll: " + e1.toString() + " " + e2.toString());
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        Log.d(LOG, "onLongPress: " + e.toString());
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Log.d(LOG, "onFling: " + e1.toString() + " " + e2.toString());
-        float dy = e2.getY() - e1.getY();
-        float dx = e2.getX() - e1.getX();
-        if (Math.abs(dy) > Math.abs(dx) && dy > SWIPE_THRESHOLD) {
-            ((ProfileListener)getActivity()).onProfileSwipe();
-        }
-        return false;
     }
 }
