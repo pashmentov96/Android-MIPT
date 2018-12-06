@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
+apply from: 'application-signing.gradle'
 
 android {
     compileSdkVersion 28
-
-
 
     defaultConfig {
         applicationId "com.github.pashmentov96.fragments"
@@ -16,9 +15,14 @@ android {
 
     }
 
+
+
     buildTypes {
+
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
